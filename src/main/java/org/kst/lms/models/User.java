@@ -1,13 +1,17 @@
 package org.kst.lms.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -16,12 +20,6 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
-    public User(Registration registration) {
-        this.username = registration.getUsername();
-        this.email = registration.getEmail();
-        this.phoneNumber = registration.getPhoneNumber();
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,10 +33,16 @@ public class User implements UserDetails {
     private boolean isEnabled = true;
 
     @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
-    private List<Role> roles;
+    private Set<Role> roles;
 
-    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
-    private List<Course> courses;
+    @ManyToMany
+    @JoinTable(
+            name = "course_enrollments",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "course_id", referencedColumnName = "id")
+    )
+    @JsonIgnore
+    private Set<Course> courses;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

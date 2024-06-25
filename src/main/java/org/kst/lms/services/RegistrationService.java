@@ -1,16 +1,19 @@
 package org.kst.lms.services;
 
 import lombok.RequiredArgsConstructor;
-import org.kst.lms.dtos.RegistrationDto;
+import org.kst.lms.dtos.RegistrationDTO;
+import org.kst.lms.exceptions.ResourceAlreadyProcessedException;
 import org.kst.lms.mails.MailService;
-import org.kst.lms.mappers.DtoMapper;
-import org.kst.lms.models.*;
+import org.kst.lms.mappers.RegistrationMapper;
+import org.kst.lms.models.Registration;
+import org.kst.lms.models.RegistrationStatus;
 import org.kst.lms.repositories.RegistrationRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
 @Service
@@ -19,30 +22,37 @@ public class RegistrationService {
     private final RegistrationRepository registrationRepository;
     private final UserService userService;
     private final CourseService courseService;
-    private final DtoMapper dtoMapper;
     private final MailService mailService;
     private final MailTemplateService mailTemplateService;
+    private final RegistrationMapper registrationMapper;
 
-    public RegistrationDto save(RegistrationDto registration) {
-        Registration newRegistration =  this.registrationRepository.save(dtoMapper.mapToRegistration(registration));
-        return this.dtoMapper.mapToRegistrationRequest(newRegistration);
+    public RegistrationDTO save(RegistrationDTO registrationDto) {
+        Registration registration = this.registrationMapper.toEntity(registrationDto);
+        registration.setStatus(RegistrationStatus.REGISTERED);
+        return this.registrationMapper.toDTO(this.registrationRepository.save(registration));
     }
 
-    public Page<Registration> findAll(int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
+    public Page<Registration> findAll(int page, int size, String sortBy, String direction) {
+        Sort sort = Sort.by(Sort.Direction.fromString(direction), sortBy);
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
         return this.registrationRepository.findAll(pageRequest);
     }
 
-    public void updateRegistrationStatus(Long registrationId, String status) {
-        Registration registration = this.registrationRepository.findByIdAndStatus(registrationId, RegistrationStatus.valueOf(status))
-                .orElseThrow(() -> new NoSuchElementException("Registration not found"));
+    public Registration updateRegistrationStatus(Long registrationId, RegistrationStatus registrationStatus) {
+        Registration registration = this.registrationRepository
+                .findById(registrationId)
+                .orElseThrow(() -> new NoSuchElementException("Registration with the given Id cannot be found."));
 
-        User user = new User(registration);
-        List<Course>  courses = this.courseService.findByRegistrationId(registrationId);
-        user.setCourses(courses);
+        if (registration.getStatus().equals(RegistrationStatus.APPROVED) || registration.getStatus().equals(RegistrationStatus.DENIED)) {
+            throw new ResourceAlreadyProcessedException("Registration has been processed.");
+        }
 
-        this.userService.save(user);
-        EmailTemplate template = this.mailTemplateService.searchEmailTemplateById(1);
-        this.mailService.sendEmail(template);
+        registration.setStatus(registrationStatus);
+        registration.setApprovedDateTime(LocalDateTime.now());
+        Registration updatedRegistration = registrationRepository.save(registration);
+
+        userService.createCustomerFromRegistration(registration);
+
+        return updatedRegistration;
     }
 }

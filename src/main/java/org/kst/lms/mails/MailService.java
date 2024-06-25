@@ -1,7 +1,5 @@
 package org.kst.lms.mails;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.kst.lms.models.EmailTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -22,11 +20,12 @@ public class MailService {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
             messageHelper.setFrom("testing@private.com");
             messageHelper.setSubject(email.getSubject());
-            System.out.println(mailContentBuilder.build(email.getBody()));
-            messageHelper.setText(mailContentBuilder.build(email.getBody()));
+            System.out.println(email.getTemplate());
+            messageHelper.setText(email.getTemplate());
         };
 
-        mailSender.send(messagePreparator);
+//        mailSender.send(messagePreparator);
+        System.out.println(email.getTemplate());
         System.out.println("Message has been sent to the user");
     }
 

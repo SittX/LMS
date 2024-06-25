@@ -1,12 +1,15 @@
 package org.kst.lms.models;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 
 @Getter
@@ -26,14 +29,19 @@ public class Registration {
     @Enumerated(EnumType.STRING)
     private RegistrationStatus status;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "registration_courses",
-            joinColumns = @JoinColumn(name = "registration_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "course_id", referencedColumnName = "id")
+            joinColumns = @JoinColumn(name = "registration"),
+            inverseJoinColumns = @JoinColumn(name = "course_id")
     )
-    private List<Course> courses;
+    private Set<Course> courses;
 
     @CreationTimestamp
-    private LocalDateTime registrationDate;
+    private LocalDateTime registrationDateTime;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedDateTime;
+
+    private LocalDateTime approvedDateTime;
 }

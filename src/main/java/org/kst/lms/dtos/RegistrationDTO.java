@@ -1,17 +1,17 @@
 package org.kst.lms.dtos;
 
 import lombok.*;
-import org.kst.lms.models.Course;
 
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
-public class RegistrationDto {
+@NoArgsConstructor
+public class RegistrationDTO {
     private String username;
     private String email;
     private String phoneNumber;
-    private List<Long> courseId;
+    private Set<Long> courseIds;
 }

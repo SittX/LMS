@@ -1,7 +1,7 @@
 package org.kst.lms.configurations;
 
 import lombok.RequiredArgsConstructor;
-import org.kst.lms.filters.JwtAuthFilter;
+import org.kst.lms.filters.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -16,19 +16,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final JwtAuthFilter jwtAuthFilter;
-    private final AuthenticationProvider authenticationProvider;
-
     private static final String[] ALLOWED_ENDPOINTS = {
             "/api/v1/auth/**",
             "/api/v1/registrations/**",
-            "/api/v1/**",
             "/swagger-ui/**",
             "/swagger-resources/**",
             "/v3/api-docs",
             "/v3/api-docs/**",
             "/webjars/**",
     };
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final AuthenticationProvider authenticationProvider;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -37,11 +35,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(requests -> {
-//                    requests.requestMatchers(ALLOWED_ENDPOINTS).permitAll();
-                    requests.anyRequest().permitAll();
+                    requests.requestMatchers(ALLOWED_ENDPOINTS).permitAll();
+                    requests.anyRequest().authenticated();
                 })
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }
