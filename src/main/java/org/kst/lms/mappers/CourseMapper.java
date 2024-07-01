@@ -2,8 +2,9 @@ package org.kst.lms.mappers;
 
 import org.kst.lms.dtos.CourseDTO;
 import org.kst.lms.models.Course;
-import org.mapstruct.Mapper;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CourseMapper {
     public Course toEntity(CourseDTO courseDTO){
        Course course = new Course();
