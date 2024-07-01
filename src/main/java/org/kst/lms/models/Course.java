@@ -25,12 +25,18 @@ public class Course {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    @ManyToMany(mappedBy = "courses", fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "courses")
     @JsonIgnore
     private List<Registration> registrations;
 
-    @ManyToMany(mappedBy = "courses", fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "courses")
     @JsonIgnore
     private List<User> users;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "course")
+    private List<Module> modules;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "course")
+    private List<Class> classes;
 }
 

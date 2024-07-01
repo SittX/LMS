@@ -7,6 +7,8 @@ import org.kst.lms.models.Registration;
 import org.kst.lms.services.CourseService;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -23,7 +25,6 @@ public class RegistrationMapper {
 
         Set<Course> courses = mapCourseIdsToCourses(dto.getCourseIds());
         registration.setCourses(courses);
-
         return registration;
     }
 
@@ -40,9 +41,7 @@ public class RegistrationMapper {
     }
 
     public Set<Course> mapCourseIdsToCourses(Set<Long> courseIds) {
-        return courseIds.stream()
-                .map(courseService::findById)
-                .collect(Collectors.toSet());
+        return new HashSet<>(this.courseService.findByIds(courseIds));
     }
 
     public Set<Long> mapCoursesToCourseIds(Set<Course> courses) {

@@ -1,6 +1,7 @@
 package org.kst.lms.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.kst.lms.dtos.CourseDTO;
 import org.kst.lms.models.Course;
 import org.kst.lms.services.CourseService;
 import org.springframework.data.domain.Page;
@@ -15,8 +16,8 @@ public class CourseController {
     private final CourseService courseService;
 
     @PostMapping
-    public ResponseEntity<Course> createCourse(@RequestBody final Course course) {
-        return new ResponseEntity<>(this.courseService.save(course), HttpStatus.CREATED);
+    public ResponseEntity<CourseDTO> createCourse(@RequestBody final CourseDTO courseDTO) {
+        return new ResponseEntity<>(this.courseService.save(courseDTO), HttpStatus.CREATED);
     }
 
     @GetMapping

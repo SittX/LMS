@@ -1,5 +1,6 @@
 package org.kst.lms.services;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.kst.lms.exceptions.ResourceNotFoundException;
 import org.kst.lms.mails.MailService;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,29 +34,28 @@ public class UserService {
         return this.userRepository.save(user);
     }
 
+    @Transactional
     public User mapFromRegistration(Registration registration) {
         User user = new User();
         user.setEmail(registration.getEmail());
         user.setUsername(registration.getUsername());
         user.setPhoneNumber(registration.getPhoneNumber());
+        Set<Long> courseIds = registration.getCourses().stream().map(Course::getId).collect(Collectors.toSet());
+
+        Set<Course> courses = new HashSet<>(this.courseService.findByIds(courseIds));
+        user.setCourses(courses);
         return user;
     }
 
+    @Transactional
     public void createCustomerFromRegistration(Registration registration) {
         User user = mapFromRegistration(registration);
-        Set<Course> courses = registration
-                .getCourses().stream()
-                .map(Course::getId)
-                .map(courseService::findById)
-                .collect(Collectors.toSet());
-        user.setCourses(courses);
-
         user.setPassword(this.passwordEncoder.encode(defaultPassword));
-        this.save(user);
+        this.userRepository.save(user);
 
-        EmailTemplate template = this.mailTemplateService.searchEmailTemplateById(1)
-                .orElseThrow(() -> new ResourceNotFoundException("Email Template does not exist."));
-        this.mailService.sendEmail(template);
+//        EmailTemplate template = this.mailTemplateService.searchEmailTemplateById(1)
+//                .orElseThrow(() -> new ResourceNotFoundException("Email Template does not exist."));
+//        this.mailService.sendEmail(template);
     }
 
 }

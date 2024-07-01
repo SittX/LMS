@@ -1,4 +1,4 @@
-package org.kst.lms.models;
+package org.kst.lms.models.enums;
 
 import lombok.Getter;
 

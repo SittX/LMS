@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.kst.lms.models.enums.RegistrationStatus;
 
 import java.time.LocalDateTime;
 import java.util.Set;

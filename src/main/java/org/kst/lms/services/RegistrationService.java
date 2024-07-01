@@ -3,10 +3,9 @@ package org.kst.lms.services;
 import lombok.RequiredArgsConstructor;
 import org.kst.lms.dtos.RegistrationDTO;
 import org.kst.lms.exceptions.ResourceAlreadyProcessedException;
-import org.kst.lms.mails.MailService;
 import org.kst.lms.mappers.RegistrationMapper;
 import org.kst.lms.models.Registration;
-import org.kst.lms.models.RegistrationStatus;
+import org.kst.lms.models.enums.RegistrationStatus;
 import org.kst.lms.repositories.RegistrationRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -21,15 +21,16 @@ import java.util.NoSuchElementException;
 public class RegistrationService {
     private final RegistrationRepository registrationRepository;
     private final UserService userService;
-    private final CourseService courseService;
-    private final MailService mailService;
-    private final MailTemplateService mailTemplateService;
     private final RegistrationMapper registrationMapper;
 
-    public RegistrationDTO save(RegistrationDTO registrationDto) {
+    public RegistrationDTO saveNewRegistration(RegistrationDTO registrationDto) {
         Registration registration = this.registrationMapper.toEntity(registrationDto);
         registration.setStatus(RegistrationStatus.REGISTERED);
         return this.registrationMapper.toDTO(this.registrationRepository.save(registration));
+    }
+
+    public List<Registration> findAll(){
+        return this.registrationRepository.findAll();
     }
 
     public Page<Registration> findAll(int page, int size, String sortBy, String direction) {
@@ -38,6 +39,11 @@ public class RegistrationService {
         return this.registrationRepository.findAll(pageRequest);
     }
 
+    public List<Registration> findAllByStatus(String status){
+        return this.registrationRepository.findAllByStatus(RegistrationStatus.findByValue(status));
+    }
+
+    /* Update registration status in the Registration table and insert into User */
     public Registration updateRegistrationStatus(Long registrationId, RegistrationStatus registrationStatus) {
         Registration registration = this.registrationRepository
                 .findById(registrationId)
@@ -51,8 +57,15 @@ public class RegistrationService {
         registration.setApprovedDateTime(LocalDateTime.now());
         Registration updatedRegistration = registrationRepository.save(registration);
 
-        userService.createCustomerFromRegistration(registration);
-
+        if(registrationStatus.equals(RegistrationStatus.APPROVED)){
+            userService.createCustomerFromRegistration(registration);
+        }
         return updatedRegistration;
+    }
+
+    public Registration update(final long id, final RegistrationDTO registrationDTO){
+        Registration registration = this.registrationMapper.toEntity(registrationDTO);
+        registration.setId(id);
+       return this.registrationRepository.save(registration);
     }
 }

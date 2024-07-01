@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private static final String[] ALLOWED_ENDPOINTS = {
             "/api/v1/auth/**",
+            "/api/emails/**",
             "/api/v1/registrations/**",
             "/swagger-ui/**",
             "/swagger-resources/**",

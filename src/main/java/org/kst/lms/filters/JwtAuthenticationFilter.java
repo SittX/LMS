@@ -11,6 +11,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.kst.lms.dtos.CustomResponseBody;
 import org.kst.lms.services.JwtService;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,16 +29,42 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
+    private static final String[] WHITELIST_ENDPOINTS = {
+            "/api/v1/auth",
+            "/api/v1/registrations",
+            "/swagger-ui",
+            "/swagger-resources",
+            "/v3/api-docs",
+            "/v3/api-docs",
+            "/webjars",
+    };
+
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
+        final String requestPath = request.getServletPath();
         final String authHeader = request.getHeader("Authorization");
 
+        for (String endpoint : WHITELIST_ENDPOINTS){
+            if(requestPath.contains(endpoint)){
+                filterChain.doFilter(request,response);
+                return;
+            }
+        }
+
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
+            CustomResponseBody responseBody = new CustomResponseBody();
+            responseBody.setStatus(HttpStatus.BAD_REQUEST.name());
+            responseBody.setMessage("Required JWT token.");
+
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setHeader("Content-Type", "application/json");
+            response.getWriter()
+                    .write(convertObjectToJson(responseBody));
             return;
         }
 
@@ -48,7 +75,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if (userEmail != null && authentication == null) {
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+                UserDetails userDetails =  this.userDetailsService.loadUserByUsername(userEmail);
 
                 if (jwtService.isValidToken(jwt, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
@@ -62,18 +89,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } catch (JwtException e) {
             CustomResponseBody responseBody = new CustomResponseBody();
+            responseBody.setStatus(HttpStatus.UNAUTHORIZED.name());
+            responseBody.setMessage(e.getMessage());
             responseBody.setMessage(e.getMessage());
 
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setHeader("Content-Type", "application/json");
-            response.getWriter().write(convertObjectToJson(responseBody));
-        } catch (RuntimeException ex) {
+            response.getWriter()
+                    .write(convertObjectToJson(responseBody));
+        }catch (RuntimeException ex){
             CustomResponseBody responseBody = new CustomResponseBody();
+            responseBody.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.name());
+            responseBody.setMessage(ex.getMessage());
             responseBody.setMessage(ex.getMessage());
 
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.setHeader("Content-Type", "application/json");
-            response.getWriter().write(convertObjectToJson(responseBody));
+            response.getWriter()
+                    .write(convertObjectToJson(responseBody));
         }
     }
 

@@ -3,6 +3,7 @@ package org.kst.lms.configurations;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,6 +13,8 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Properties;
 
 @Configuration
 @RequiredArgsConstructor
@@ -38,6 +41,18 @@ public class ApplicationConfig {
 
     @Bean
     public JavaMailSender mailSender() {
-        return new JavaMailSenderImpl();
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost("sandbox.smtp.mailtrap.io");
+        mailSender.setPort(2525);
+
+        mailSender.setUsername("0f44a609da86f9");
+        mailSender.setPassword("93e01dc4cbdd04");
+
+        Properties props = mailSender.getJavaMailProperties();
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.debug", "true");
+        return mailSender;
     }
 }
