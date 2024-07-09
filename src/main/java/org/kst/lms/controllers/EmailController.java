@@ -14,13 +14,13 @@ public class EmailController {
     private final MailService mailService;
 
     @GetMapping
-    public String sendEmail(){
+    public String sendEmail() {
         EmailTemplate template = new EmailTemplate();
         template.setSubject("Test Email Subject");
         template.setBody("Test Email Body");
         template.setTemplate("Test Email Template");
 
-         mailService.sendEmail(template);
-         return "Mail Send";
+        mailService.sendEmail(template);
+        return "Mail Send";
     }
 }

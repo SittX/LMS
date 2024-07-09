@@ -23,9 +23,21 @@ public class Registration {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String username;
+
+    @Column(name = "name",nullable = false)
+    private String name;
+
+    @Column(unique = true, nullable = false)
     private String email;
-    private String phoneNumber;
+
+    @Column(unique = true, length = 80, nullable = false)
+    private String contactNumber;
+
+    @Column(unique = true, nullable = false)
+    private String guardianName;
+
+    @Column(unique = true, nullable = false)
+    private String guardianContactNumber;
 
     @Enumerated(EnumType.STRING)
     private RegistrationStatus status;
@@ -33,7 +45,7 @@ public class Registration {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "registration_courses",
-            joinColumns = @JoinColumn(name = "registration"),
+            joinColumns = @JoinColumn(name = "registration_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id")
     )
     private Set<Course> courses;

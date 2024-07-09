@@ -29,7 +29,7 @@ public class RegistrationService {
         return this.registrationMapper.toDTO(this.registrationRepository.save(registration));
     }
 
-    public List<Registration> findAll(){
+    public List<Registration> findAll() {
         return this.registrationRepository.findAll();
     }
 
@@ -39,7 +39,7 @@ public class RegistrationService {
         return this.registrationRepository.findAll(pageRequest);
     }
 
-    public List<Registration> findAllByStatus(String status){
+    public List<Registration> findAllByStatus(String status) {
         return this.registrationRepository.findAllByStatus(RegistrationStatus.findByValue(status));
     }
 
@@ -57,15 +57,15 @@ public class RegistrationService {
         registration.setApprovedDateTime(LocalDateTime.now());
         Registration updatedRegistration = registrationRepository.save(registration);
 
-        if(registrationStatus.equals(RegistrationStatus.APPROVED)){
+        if (registrationStatus.equals(RegistrationStatus.APPROVED)) {
             userService.createCustomerFromRegistration(registration);
         }
         return updatedRegistration;
     }
 
-    public Registration update(final long id, final RegistrationDTO registrationDTO){
+    public Registration update(final long id, final RegistrationDTO registrationDTO) {
         Registration registration = this.registrationMapper.toEntity(registrationDTO);
         registration.setId(id);
-       return this.registrationRepository.save(registration);
+        return this.registrationRepository.save(registration);
     }
 }

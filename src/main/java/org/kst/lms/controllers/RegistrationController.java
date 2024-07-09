@@ -30,20 +30,16 @@ public class RegistrationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Registration>> getRegistrationAll(){
+    public ResponseEntity<List<Registration>> getRegistrationAll() {
         return ResponseEntity.ok(this.registrationService.findAll());
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<List<Registration>> getRegistrationByStatus(@RequestParam(name = "status", defaultValue = "registered") final String status){
+    public ResponseEntity<List<Registration>> getRegistrationByStatus(@RequestParam(name = "status", defaultValue = "registered") final String status) {
         return ResponseEntity.ok(this.registrationService.findAllByStatus(status));
     }
 
-    @PostMapping
-    public ResponseEntity<RegistrationDTO> createNewRegistration(@RequestBody final RegistrationDTO registration) {
-        RegistrationDTO registrationDTO = this.registrationService.saveNewRegistration(registration);
-        return ResponseEntity.status(HttpStatus.CREATED).body(registrationDTO);
-    }
+
 
     @PutMapping("/update")
     public ResponseEntity<RegistrationDTO> updateRegistrationStatus(@RequestParam(name = "registration_id") final long registrationId,
@@ -54,7 +50,7 @@ public class RegistrationController {
 
     @PutMapping
     public ResponseEntity<RegistrationDTO> updateRegistrationDetails(@RequestBody final RegistrationDTO registrationDTO,
-                                                                     @RequestParam(value = "id") final Long id){
+                                                                     @RequestParam(value = "id") final Long id) {
         Registration updatedRegistration = this.registrationService.update(id, registrationDTO);
         return ResponseEntity.ok(this.registrationMapper.toDTO(updatedRegistration));
     }

@@ -17,7 +17,9 @@ public class CourseController {
 
     @PostMapping
     public ResponseEntity<CourseDTO> createCourse(@RequestBody final CourseDTO courseDTO) {
-        return new ResponseEntity<>(this.courseService.save(courseDTO), HttpStatus.CREATED);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(this.courseService.save(courseDTO));
     }
 
     @GetMapping

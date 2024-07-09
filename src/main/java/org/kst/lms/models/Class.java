@@ -20,14 +20,14 @@ public class Class {
     private Long id;
     private String name;
     private String description;
-
-    @ManyToOne(targetEntity = Course.class)
-    @JoinColumn(name = "course_id", referencedColumnName = "id")
-    private Course course;
-
-    @OneToMany(mappedBy = "attendanceClass", fetch = FetchType.LAZY)
-    private List<Attendance> attendances;
-
-    @ManyToMany(mappedBy = "classes", fetch = FetchType.LAZY)
-    private List<User> users;
+//
+//    @ManyToOne(targetEntity = Course.class)
+//    @JoinColumn(name = "course_id", referencedColumnName = "id")
+//    private Course course;
+//
+//    @OneToMany(mappedBy = "attendanceClass", fetch = FetchType.LAZY)
+//    private List<Attendance> attendances;
+//
+//    @ManyToMany(mappedBy = "classes", fetch = FetchType.LAZY)
+//    private List<User> users;
 }

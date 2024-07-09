@@ -8,7 +8,6 @@ import org.kst.lms.services.CourseService;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -19,9 +18,9 @@ public class RegistrationMapper {
 
     public Registration toEntity(RegistrationDTO dto) {
         Registration registration = new Registration();
-        registration.setUsername(dto.getUsername());
+        registration.setName(dto.getName());
         registration.setEmail(dto.getEmail());
-        registration.setPhoneNumber(dto.getPhoneNumber());
+        registration.setContactNumber(dto.getContactNumber());
 
         Set<Course> courses = mapCourseIdsToCourses(dto.getCourseIds());
         registration.setCourses(courses);
@@ -30,9 +29,9 @@ public class RegistrationMapper {
 
     public RegistrationDTO toDTO(Registration registration) {
         RegistrationDTO registrationDTO = new RegistrationDTO();
-        registrationDTO.setUsername(registration.getUsername());
+        registrationDTO.setName(registration.getName());
         registrationDTO.setEmail(registration.getEmail());
-        registrationDTO.setPhoneNumber(registration.getPhoneNumber());
+        registrationDTO.setContactNumber(registration.getContactNumber());
 
         Set<Long> courseIds = mapCoursesToCourseIds(registration.getCourses());
         registrationDTO.setCourseIds(courseIds);

@@ -26,9 +26,6 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final JwtService jwtService;
-    private final UserDetailsService userDetailsService;
-
     private static final String[] WHITELIST_ENDPOINTS = {
             "/api/v1/auth",
             "/api/v1/registrations",
@@ -38,6 +35,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/v3/api-docs",
             "/webjars",
     };
+    private final JwtService jwtService;
+    private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(
@@ -48,9 +47,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String requestPath = request.getServletPath();
         final String authHeader = request.getHeader("Authorization");
 
-        for (String endpoint : WHITELIST_ENDPOINTS){
-            if(requestPath.contains(endpoint)){
-                filterChain.doFilter(request,response);
+        for (String endpoint : WHITELIST_ENDPOINTS) {
+            if (requestPath.contains(endpoint)) {
+                filterChain.doFilter(request, response);
                 return;
             }
         }
@@ -75,7 +74,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if (userEmail != null && authentication == null) {
-                UserDetails userDetails =  this.userDetailsService.loadUserByUsername(userEmail);
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
                 if (jwtService.isValidToken(jwt, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
@@ -97,7 +96,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             response.setHeader("Content-Type", "application/json");
             response.getWriter()
                     .write(convertObjectToJson(responseBody));
-        }catch (RuntimeException ex){
+        } catch (RuntimeException ex) {
             CustomResponseBody responseBody = new CustomResponseBody();
             responseBody.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.name());
             responseBody.setMessage(ex.getMessage());

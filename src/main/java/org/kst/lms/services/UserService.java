@@ -2,10 +2,8 @@ package org.kst.lms.services;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.kst.lms.exceptions.ResourceNotFoundException;
 import org.kst.lms.mails.MailService;
 import org.kst.lms.models.Course;
-import org.kst.lms.models.EmailTemplate;
 import org.kst.lms.models.Registration;
 import org.kst.lms.models.User;
 import org.kst.lms.repositories.UserRepository;
@@ -14,7 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,8 +35,8 @@ public class UserService {
     public User mapFromRegistration(Registration registration) {
         User user = new User();
         user.setEmail(registration.getEmail());
-        user.setUsername(registration.getUsername());
-        user.setPhoneNumber(registration.getPhoneNumber());
+        user.setName(registration.getName());
+        user.setContactNumber(registration.getContactNumber());
         Set<Long> courseIds = registration.getCourses().stream().map(Course::getId).collect(Collectors.toSet());
 
         Set<Course> courses = new HashSet<>(this.courseService.findByIds(courseIds));

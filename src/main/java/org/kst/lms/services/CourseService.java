@@ -26,7 +26,7 @@ public class CourseService {
         return this.courseRepository.findAll(pageRequest);
     }
 
-    public List<Course> findByIds(Collection<Long> courseIds){
+    public List<Course> findByIds(Collection<Long> courseIds) {
         return this.courseRepository.findAllById(courseIds);
     }
 

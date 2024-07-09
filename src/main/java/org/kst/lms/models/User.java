@@ -23,10 +23,22 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String username;
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Column(unique = true, nullable = false)
     private String email;
     private String password;
-    private String phoneNumber;
+
+    @Column(unique = true)
+    private String contactNumber;
+
+    @Column(nullable = false)
+    private String guardianName;
+
+    @Column(unique = true)
+    private String guardianContactNumber;
+
     private boolean isAccountNonExpired = true;
     private boolean isAccountNonLocked = true;
     private boolean isCredentialsNonExpired = true;
@@ -44,23 +56,23 @@ public class User implements UserDetails {
     @JsonIgnore
     private Set<Course> courses;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Attendance> attendances;
-
-    @ManyToMany
-    @JoinTable(
-            name = "user_classes",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "class_id", referencedColumnName = "id")
-    )
-    @JsonIgnore
-    private Set<Class> classes;
-
-    @OneToMany(mappedBy="user", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<LeaveRequest> leaveRequests;
-
+//    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+//    @JsonIgnore
+//    private List<Attendance> attendances;
+//
+//    @ManyToMany
+//    @JoinTable(
+//            name = "user_classes",
+//            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+//            inverseJoinColumns = @JoinColumn(name = "class_id", referencedColumnName = "id")
+//    )
+//    @JsonIgnore
+//    private Set<Class> classes;
+//
+//    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+//    @JsonIgnore
+//    private List<LeaveRequest> leaveRequests;
+//
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
@@ -73,7 +85,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.username;
+        return this.name;
     }
 
     @Override

@@ -13,26 +13,25 @@ import java.util.List;
 
 @Configuration
 public class OpenApiConfig {
-    private final String schemeName = "bearerAuth";
-    private final String bearerFormat = "JWT";
-    private final String scheme = "bearer";
-
     private static final List<Server> servers = List.of(
             new Server().url("http://localhost:8080").description("DEV"),
             new Server().url("http://192.168.1.1:8080").description("UAT")
     );
+    private final String schemeName = "bearerAuth";
+    private final String bearerFormat = "JWT";
+    private final String scheme = "bearer";
 
     @Bean
-    public OpenAPI createOpenAPI(){
+    public OpenAPI createOpenAPI() {
         return new OpenAPI()
                 .addSecurityItem(new SecurityRequirement().addList(schemeName))
                 .components(new Components().addSecuritySchemes(schemeName,
-                        new SecurityScheme()
-                                .name(schemeName)
-                                .type(SecurityScheme.Type.HTTP)
-                                .bearerFormat(bearerFormat)
-                                .in(SecurityScheme.In.HEADER)
-                                .scheme(scheme)
+                                new SecurityScheme()
+                                        .name(schemeName)
+                                        .type(SecurityScheme.Type.HTTP)
+                                        .bearerFormat(bearerFormat)
+                                        .in(SecurityScheme.In.HEADER)
+                                        .scheme(scheme)
                         )
                 )
                 .info(

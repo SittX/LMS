@@ -26,9 +26,9 @@ public class LeaveRequest {
 
     @Enumerated(EnumType.STRING)
     private LeaveRequestStatus requestStatus;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
+//
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "user_id", referencedColumnName = "id")
+//    private User user;
 
 }

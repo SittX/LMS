@@ -1,6 +1,5 @@
 package org.kst.lms.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +9,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
@@ -31,7 +29,7 @@ public class Module {
     @UpdateTimestamp
     private LocalDateTime updatedOn;
 
-    @ManyToOne(targetEntity = Course.class)
-    @JoinColumn(name = "course_id", referencedColumnName = "id")
-    private Course course;
+//    @ManyToOne(targetEntity = Course.class)
+//    @JoinColumn(name = "course_id", referencedColumnName = "id")
+//    private Course course;
 }

@@ -10,8 +10,10 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegistrationDTO {
-    private String username;
+    private String name;
     private String email;
-    private String phoneNumber;
+    private String contactNumber;
+    private String guardianName;
+    private String guardianContactNumber;
     private Set<Long> courseIds;
 }

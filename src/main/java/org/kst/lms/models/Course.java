@@ -33,10 +33,10 @@ public class Course {
     @JsonIgnore
     private List<User> users;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "course")
-    private List<Module> modules;
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "course")
+//    private List<Module> modules;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "course")
-    private List<Class> classes;
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "course")
+//    private List<Class> classes;
 }
 
