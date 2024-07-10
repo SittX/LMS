@@ -3,7 +3,8 @@ package org.kst.lms.controllers;
 import lombok.RequiredArgsConstructor;
 import org.kst.lms.dtos.LoginRequest;
 import org.kst.lms.dtos.LoginResponse;
-import org.kst.lms.dtos.RegistrationDTO;
+import org.kst.lms.models.Registration;
+import org.kst.lms.models.User;
 import org.kst.lms.services.AuthService;
 import org.kst.lms.services.RegistrationService;
 import org.springframework.http.HttpStatus;
@@ -27,8 +28,13 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<RegistrationDTO> createNewRegistration(@RequestBody final RegistrationDTO registration) {
-        RegistrationDTO registrationDTO = this.registrationService.saveNewRegistration(registration);
-        return ResponseEntity.status(HttpStatus.CREATED).body(registrationDTO);
+    public ResponseEntity<Registration> newRegistration(@RequestBody final Registration registration) {
+        Registration newRegistration = this.registrationService.saveNewRegistration(registration);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newRegistration);
+    }
+
+    @PostMapping("/signup")
+    public ResponseEntity<User> signup(@RequestBody final User user){
+       return ResponseEntity.status(HttpStatus.CREATED).body(authService.signup(user));
     }
 }

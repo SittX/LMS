@@ -1,9 +1,9 @@
 package org.kst.lms.services;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.kst.lms.dtos.RegistrationDTO;
 import org.kst.lms.exceptions.ResourceAlreadyProcessedException;
-import org.kst.lms.mappers.RegistrationMapper;
+import org.kst.lms.exceptions.ResourceNotFoundException;
 import org.kst.lms.models.Registration;
 import org.kst.lms.models.enums.RegistrationStatus;
 import org.kst.lms.repositories.RegistrationRepository;
@@ -21,12 +21,10 @@ import java.util.NoSuchElementException;
 public class RegistrationService {
     private final RegistrationRepository registrationRepository;
     private final UserService userService;
-    private final RegistrationMapper registrationMapper;
 
-    public RegistrationDTO saveNewRegistration(RegistrationDTO registrationDto) {
-        Registration registration = this.registrationMapper.toEntity(registrationDto);
+    public Registration saveNewRegistration(Registration registration) {
         registration.setStatus(RegistrationStatus.REGISTERED);
-        return this.registrationMapper.toDTO(this.registrationRepository.save(registration));
+        return this.registrationRepository.save(registration);
     }
 
     public List<Registration> findAll() {
@@ -44,6 +42,7 @@ public class RegistrationService {
     }
 
     /* Update registration status in the Registration table and insert into User */
+    @Transactional
     public Registration updateRegistrationStatus(Long registrationId, RegistrationStatus registrationStatus) {
         Registration registration = this.registrationRepository
                 .findById(registrationId)
@@ -63,9 +62,13 @@ public class RegistrationService {
         return updatedRegistration;
     }
 
-    public Registration update(final long id, final RegistrationDTO registrationDTO) {
-        Registration registration = this.registrationMapper.toEntity(registrationDTO);
-        registration.setId(id);
-        return this.registrationRepository.save(registration);
+    public Registration update(final long id, final Registration registration) {
+        Registration oldRegistration = this.registrationRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Registration with the given id cannot be found."));
+        oldRegistration.setName(registration.getName());
+        oldRegistration.setContactNumber(registration.getContactNumber());
+        oldRegistration.setGuardianContactNumber(registration.getGuardianContactNumber());
+        oldRegistration.setGuardianName(registration.getGuardianName());
+        oldRegistration.setEmail(registration.getEmail());
+        return this.registrationRepository.save(oldRegistration);
     }
 }

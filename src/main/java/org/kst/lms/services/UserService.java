@@ -37,6 +37,8 @@ public class UserService {
         user.setEmail(registration.getEmail());
         user.setName(registration.getName());
         user.setContactNumber(registration.getContactNumber());
+        user.setGuardianName(registration.getGuardianName());
+        user.setGuardianContactNumber(registration.getGuardianContactNumber());
         Set<Long> courseIds = registration.getCourses().stream().map(Course::getId).collect(Collectors.toSet());
 
         Set<Course> courses = new HashSet<>(this.courseService.findByIds(courseIds));
@@ -49,10 +51,6 @@ public class UserService {
         User user = mapFromRegistration(registration);
         user.setPassword(this.passwordEncoder.encode(defaultPassword));
         this.userRepository.save(user);
-
-//        EmailTemplate template = this.mailTemplateService.searchEmailTemplateById(1)
-//                .orElseThrow(() -> new ResourceNotFoundException("Email Template does not exist."));
-//        this.mailService.sendEmail(template);
     }
 
 }
