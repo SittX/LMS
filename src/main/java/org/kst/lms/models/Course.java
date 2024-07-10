@@ -30,13 +30,12 @@ public class Course {
     private List<Registration> registrations;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "courses")
-    @JsonIgnore
     private List<User> users;
 
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "course")
-//    private List<Module> modules;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "course")
+    private List<CourseModule> courseModules;
 
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "course")
-//    private List<Class> classes;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "course")
+    private List<CourseClass> courseClasses;
 }
 

@@ -3,6 +3,7 @@ package org.kst.lms.services;
 import lombok.RequiredArgsConstructor;
 import org.kst.lms.exceptions.ResourceNotFoundException;
 import org.kst.lms.models.Course;
+import org.kst.lms.models.User;
 import org.kst.lms.repositories.CourseRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -24,7 +26,10 @@ public class CourseService {
     }
 
     public List<Course> findAll(){
-        return this.courseRepository.findAll();
+        return this.courseRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparingLong(Course::getId))
+                .toList();
     }
 
     public List<Course> findByIds(Collection<Long> courseIds) {
@@ -54,5 +59,10 @@ public class CourseService {
         oldCourse.setEndDate(course.getEndDate());
         Course updatedCourse = this.courseRepository.save(oldCourse);
         return updatedCourse;
+    }
+
+    public List<User> getCourseUser(long courseId){
+        Course course = this.courseRepository.findById(courseId).orElseThrow(() -> new ResourceNotFoundException("Course with given Id cannot be found"));
+        return course.getUsers();
     }
 }

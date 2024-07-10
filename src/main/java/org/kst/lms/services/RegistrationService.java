@@ -2,8 +2,10 @@ package org.kst.lms.services;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.kst.lms.dtos.RegistrationRequest;
 import org.kst.lms.exceptions.ResourceAlreadyProcessedException;
 import org.kst.lms.exceptions.ResourceNotFoundException;
+import org.kst.lms.mappers.RegistrationMapper;
 import org.kst.lms.models.Registration;
 import org.kst.lms.models.enums.RegistrationStatus;
 import org.kst.lms.repositories.RegistrationRepository;
@@ -21,8 +23,10 @@ import java.util.NoSuchElementException;
 public class RegistrationService {
     private final RegistrationRepository registrationRepository;
     private final UserService userService;
+    private final RegistrationMapper  registrationMapper;
 
-    public Registration saveNewRegistration(Registration registration) {
+    public Registration saveNewRegistration(RegistrationRequest registrationRequest) {
+        Registration registration = registrationMapper.mapToRegistration(registrationRequest);
         registration.setStatus(RegistrationStatus.REGISTERED);
         return this.registrationRepository.save(registration);
     }

@@ -1,5 +1,6 @@
 package org.kst.lms.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "course_modules")
-public class Module {
+public class CourseModule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,7 +30,8 @@ public class Module {
     @UpdateTimestamp
     private LocalDateTime updatedOn;
 
-//    @ManyToOne(targetEntity = Course.class)
-//    @JoinColumn(name = "course_id", referencedColumnName = "id")
-//    private Course course;
+    @ManyToOne(targetEntity = Course.class)
+    @JoinColumn(name = "course_id", referencedColumnName = "id")
+    @JsonIgnore
+    private Course course;
 }

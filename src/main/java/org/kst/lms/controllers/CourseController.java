@@ -2,6 +2,7 @@ package org.kst.lms.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.kst.lms.models.Course;
+import org.kst.lms.models.User;
 import org.kst.lms.services.CourseService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -39,5 +40,11 @@ public class CourseController {
     @PutMapping("/{id}")
     public ResponseEntity<Course> updateCourse(@PathVariable final long id, @RequestBody Course course){
            return ResponseEntity.ok(this.courseService.update(id, course));
+    }
+
+    @GetMapping("/{courseId}/users")
+    public ResponseEntity<List<User>> getUsersForCourse(@PathVariable final long courseId){
+        List<User> courseUsers = this.courseService.getCourseUser(courseId);
+        return ResponseEntity.ok(courseUsers);
     }
 }

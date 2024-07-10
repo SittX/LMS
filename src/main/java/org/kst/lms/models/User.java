@@ -53,21 +53,20 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "course_id", referencedColumnName = "id")
     )
-    @JsonIgnore
     private Set<Course> courses;
 
 //    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 //    @JsonIgnore
 //    private List<Attendance> attendances;
 //
-//    @ManyToMany
-//    @JoinTable(
-//            name = "user_classes",
-//            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-//            inverseJoinColumns = @JoinColumn(name = "class_id", referencedColumnName = "id")
-//    )
-//    @JsonIgnore
-//    private Set<Class> classes;
+    @ManyToMany
+    @JoinTable(
+            name = "user_classes",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "class_id", referencedColumnName = "id")
+    )
+    @JsonIgnore
+    private Set<CourseClass> courseClasses;
 //
 //    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 //    @JsonIgnore
