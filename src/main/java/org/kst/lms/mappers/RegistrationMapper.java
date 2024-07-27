@@ -1,11 +1,10 @@
 package org.kst.lms.mappers;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.kst.lms.dtos.RegistrationRequest;
-import org.kst.lms.models.Course;
+import org.kst.lms.models.CourseClass;
 import org.kst.lms.models.Registration;
-import org.kst.lms.repositories.CourseRepository;
+import org.kst.lms.repositories.CourseClassRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -15,7 +14,7 @@ import java.util.Set;
 @Component
 @RequiredArgsConstructor
 public class RegistrationMapper {
-    private final CourseRepository courseRepository;
+    private final CourseClassRepository courseClassRepository;
 
     public Registration mapToRegistration(RegistrationRequest request){
         if (request == null) {
@@ -31,13 +30,13 @@ public class RegistrationMapper {
         registration.setStatus(request.getStatus());
 
         // Convert course IDs to Course entities
-        Set<Course> courses = convertCourseIdsToCourses(request.getCourseIds());
-        registration.setCourses(courses);
+        Set<CourseClass> courseClasses = convertCourseIdsToCourses(request.getCourseIds());
+        registration.setCourseClasses(courseClasses);
 
         return registration;
     }
 
-    private Set<Course> convertCourseIdsToCourses(List<Long> courseIds) {
-        return new HashSet<>(courseRepository.findAllById(courseIds));
+    private Set<CourseClass> convertCourseIdsToCourses(List<Long> courseIds) {
+        return new HashSet<>(courseClassRepository.findAllById(courseIds));
     }
 }

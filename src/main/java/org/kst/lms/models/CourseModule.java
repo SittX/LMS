@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "course_modules")
+//@Entity
+//@Table(name = "course_modules")
 public class CourseModule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,8 +30,8 @@ public class CourseModule {
     @UpdateTimestamp
     private LocalDateTime updatedOn;
 
-    @ManyToOne(targetEntity = Course.class)
-    @JoinColumn(name = "course_id", referencedColumnName = "id")
-    @JsonIgnore
-    private Course course;
+//    @ManyToOne(targetEntity = CourseClass.class)
+//    @JoinColumn(name = "course_id", referencedColumnName = "id")
+//    @JsonIgnore
+//    private CourseClass courseClass;
 }

@@ -33,8 +33,4 @@ public class AuthService {
         return loginResponse;
     }
 
-    public User signup(User user){
-        user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-        return this.userService.save(user);
-    }
 }

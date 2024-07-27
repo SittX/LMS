@@ -2,9 +2,11 @@ package org.kst.lms.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.kst.lms.dtos.CourseClassRequest;
-import org.kst.lms.mappers.CourseClassMapper;
 import org.kst.lms.models.CourseClass;
+import org.kst.lms.models.Subject;
+import org.kst.lms.models.User;
 import org.kst.lms.services.CourseClassService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,9 +32,34 @@ public class CourseClassController {
         return ResponseEntity.ok(classes);
     }
 
-    @PutMapping("/{classId}")
-    public ResponseEntity<CourseClass> updateClass(@PathVariable final long classId, @RequestBody final CourseClassRequest courseClassRequest){
-       CourseClass updatedClass = this.courseClassService.update(classId, courseClassRequest);
-       return ResponseEntity.ok(updatedClass);
+    @GetMapping("paging")
+    public Page<CourseClass> getAllCourses(@RequestParam(name = "page", defaultValue = "0") final int page,
+                                           @RequestParam(name = "size", defaultValue = "10") final int size,
+                                           @RequestParam(name = "sortBy", defaultValue = "id") final String sortBy,
+                                           @RequestParam(name = "direction", defaultValue = "asc") final String direction) {
+        return this.courseClassService.findAll(page, size, sortBy, direction);
+    }
+
+    @PostMapping
+    public ResponseEntity<CourseClass> createCourse(@RequestBody final CourseClassRequest courseClassReq) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(this.courseClassService.save(courseClassReq));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CourseClass>> getCourses(){
+        return ResponseEntity.ok(this.courseClassService.findAll());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CourseClass> updateCourse(@PathVariable final long id, @RequestBody CourseClass aCourseClass){
+        return ResponseEntity.ok(this.courseClassService.update(id, aCourseClass));
+    }
+
+    @GetMapping("/{courseId}/users")
+    public ResponseEntity<List<User>> getUsersForCourse(@PathVariable final long courseId){
+        List<User> courseUsers = this.courseClassService.getCourseUser(courseId);
+        return ResponseEntity.ok(courseUsers);
     }
 }

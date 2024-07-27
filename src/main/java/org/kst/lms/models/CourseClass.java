@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -14,22 +15,25 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "classes")
+@Table(name = "course_classes")
 public class CourseClass {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String description;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
-    @ManyToOne(targetEntity = Course.class)
-    @JoinColumn(name = "course_id", referencedColumnName = "id")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "courseClasses")
     @JsonIgnore
-    private Course course;
+    private List<Registration> registrations;
 
-    @OneToMany(mappedBy = "courseClass", fetch = FetchType.LAZY)
-    private List<Attendance> attendances;
-
-    @ManyToMany(mappedBy = "courseClasses", fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "courseClasses")
+    @JsonIgnore
     private List<User> users;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "courseClass")
+    private List<SubjectWithSchedule> subjectWithSchedules;
 }
+

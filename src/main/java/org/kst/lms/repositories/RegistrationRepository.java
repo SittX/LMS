@@ -11,6 +11,5 @@ import java.util.Optional;
 @Repository
 public interface RegistrationRepository extends JpaRepository<Registration, Long> {
     Optional<Registration> findByIdAndStatus(Long id, RegistrationStatus status);
-
     List<Registration> findAllByStatus(RegistrationStatus status);
 }

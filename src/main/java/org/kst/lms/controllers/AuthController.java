@@ -34,8 +34,5 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newRegistration);
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<User> signup(@RequestBody final User user){
-       return ResponseEntity.status(HttpStatus.CREATED).body(authService.signup(user));
-    }
+
 }

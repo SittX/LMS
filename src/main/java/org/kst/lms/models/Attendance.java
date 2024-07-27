@@ -13,17 +13,17 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "attendances")
+//@Entity
+//@Table(name = "attendances")
 public class Attendance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDate attendanceDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "class_id", referencedColumnName = "id")
-    private CourseClass courseClass;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "class_id", referencedColumnName = "id")
+//    private Subject subject;
 //
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "user_id", referencedColumnName = "id")

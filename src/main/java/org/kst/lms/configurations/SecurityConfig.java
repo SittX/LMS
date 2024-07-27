@@ -40,6 +40,9 @@ public class SecurityConfig {
                     requests.anyRequest().authenticated();
                 })
                 .authenticationProvider(authenticationProvider)
+                .passwordManagement((management)->{
+                    management.changePasswordPage("/update-password");
+                })
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

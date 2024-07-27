@@ -3,6 +3,9 @@ package org.kst.lms.dtos;
 
 import lombok.*;
 
+import java.time.LocalDate;
+import java.util.Set;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -11,5 +14,8 @@ import lombok.*;
 public class CourseClassRequest {
     private String name;
     private String description;
-    private long courseId;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private Long teacherId;
+    private Set<SubjectWithScheduleRequest> subjectWithScheduleRequests;
 }

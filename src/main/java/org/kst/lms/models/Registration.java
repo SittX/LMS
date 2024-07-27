@@ -7,12 +7,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.kst.lms.dtos.RegistrationRequest;
+import org.kst.lms.models.enums.Gender;
 import org.kst.lms.models.enums.RegistrationStatus;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 
@@ -27,7 +25,7 @@ public class Registration {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name",nullable = false)
+    @Column(nullable = false)
     private String name;
 
     @Column(unique = true, nullable = false)
@@ -36,7 +34,12 @@ public class Registration {
     @Column(unique = true, length = 80, nullable = false)
     private String contactNumber;
 
-    @Column(unique = true, nullable = false)
+    private String address;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    @Column(nullable = false)
     private String guardianName;
 
     @Column(unique = true, nullable = false)
@@ -51,7 +54,7 @@ public class Registration {
             joinColumns = @JoinColumn(name = "registration_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id")
     )
-    private Set<Course> courses;
+    private Set<CourseClass> courseClasses;
 
     @CreationTimestamp
     private LocalDateTime registrationDateTime;
