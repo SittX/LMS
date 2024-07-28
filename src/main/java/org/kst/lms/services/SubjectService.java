@@ -5,6 +5,7 @@ import org.kst.lms.models.Subject;
 import org.kst.lms.repositories.SubjectRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -14,7 +15,9 @@ public class SubjectService {
     private final SubjectRepository subjectRepository;
 
     public List<Subject> findAll(){
-       return this.subjectRepository.findAll();
+       return this.subjectRepository.findAll().stream()
+               .sorted(Comparator.comparingLong(Subject::getId))
+               .toList();
     }
 
     public Subject findById(long id){

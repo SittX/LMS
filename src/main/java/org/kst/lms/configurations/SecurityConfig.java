@@ -36,8 +36,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(requests -> {
-                    requests.requestMatchers(ALLOWED_ENDPOINTS).permitAll();
-                    requests.anyRequest().authenticated();
+//                    requests.requestMatchers(ALLOWED_ENDPOINTS).permitAll();
+//                    requests.anyRequest().authenticated();
+                    requests.anyRequest().permitAll();
                 })
                 .authenticationProvider(authenticationProvider)
                 .passwordManagement((management)->{

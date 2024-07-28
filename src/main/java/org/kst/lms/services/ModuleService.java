@@ -18,12 +18,12 @@ package org.kst.lms.services;
 //        CourseModule module = this.moduleRepository.findById(id)
 //                .orElseThrow(()-> new ResourceNotFoundException("Course Module with given Id cannot be found."));
 //
-//        CourseClass aCourseClass = this.courseRepository.findById(courseModuleRequest.getCourseId())
+//        CourseClass courseClass = this.courseRepository.findById(courseModuleRequest.getCourseId())
 //                .orElseThrow(() -> new ResourceNotFoundException("Course with given Id cannot be found."));
 //
 //        module.setName(courseModuleRequest.getName());
 //        module.setDescription(courseModuleRequest.getDescription());
-////        module.set(aCourseClass);
+////        module.set(courseClass);
 //        return this.moduleRepository.save(module);
 //    }
 //}

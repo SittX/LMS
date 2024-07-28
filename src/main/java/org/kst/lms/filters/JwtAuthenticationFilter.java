@@ -27,6 +27,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String[] WHITELIST_ENDPOINTS = {
+            "/api/v1",
             "/api/v1/auth",
             "/api/v1/registrations",
             "/swagger-ui",

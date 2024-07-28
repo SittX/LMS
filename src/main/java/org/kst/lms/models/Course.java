@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -15,8 +16,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "course_classes")
-public class CourseClass {
+@Table(name = "courses")
+public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,15 +26,15 @@ public class CourseClass {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "courseClasses")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "courses")
     @JsonIgnore
-    private List<Registration> registrations;
+    private List<Registration> registrations = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "courseClasses")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "courses")
     @JsonIgnore
-    private List<User> users;
+    private List<User> users = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "courseClass")
-    private List<SubjectWithSchedule> subjectWithSchedules;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "course")
+    private List<SubjectSchedule> subjectSchedules = new ArrayList<>();
 }
 

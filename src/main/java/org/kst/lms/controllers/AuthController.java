@@ -28,6 +28,7 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    // TODO : Need to Refactor or debug this method
     @PostMapping("/register")
     public ResponseEntity<Registration> newRegistration(@RequestBody final RegistrationRequest registrationRequest) {
         Registration newRegistration = this.registrationService.saveNewRegistration(registrationRequest);

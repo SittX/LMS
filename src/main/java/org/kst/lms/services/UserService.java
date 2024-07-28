@@ -2,7 +2,9 @@ package org.kst.lms.services;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.kst.lms.models.CourseClass;
+import org.kst.lms.dtos.UserDto;
+import org.kst.lms.mappers.UserMapper;
+import org.kst.lms.models.Course;
 import org.kst.lms.models.Registration;
 import org.kst.lms.models.User;
 import org.kst.lms.repositories.UserRepository;
@@ -20,45 +22,54 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final CourseClassService courseClassService;
+    private final CourseService courseService;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
     @Value("${app.defaultPassword}")
     private String defaultPassword;
+//
+//    public UserDto save(User user) {
+//        return this.userRepository.save(user);
+//    }
 
-    public User save(User user) {
-        return this.userRepository.save(user);
+    public UserDto signup(UserDto userDto){
+        User user = this.userMapper.toEntity(userDto);
+        String hashedPassword= this.passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashedPassword);
+        User savedUser = this.userRepository.save(user);
+        return this.userMapper.toDto(savedUser);
     }
 
-    public User signup(User user){
-        user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-        return this.save(user);
+    public List<UserDto> findAll(){
+        return this.userRepository.findAll().stream()
+                .map(this.userMapper::toDto)
+                .toList();
     }
 
-    public List<User> findAll(){
-        return this.userRepository.findAll();
+    public List<UserDto> findAllByRole(long roleId) {
+           return this.userRepository.findAllByRoles_Id(roleId).stream()
+                   .map(this.userMapper::toDto)
+                   .toList();
     }
 
-    public List<User> findAllByRole(long roleId) {
-           return this.userRepository.findAllByRoles_Id(roleId);
+    public UserDto findById(Long id) {
+        User user = this.userRepository.findById(id).orElseThrow(()-> new NoSuchElementException("User with id " + id + " not found"));
+        return this.userMapper.toDto(user);
     }
 
-    public User findById(Long id) {
-        return this.userRepository.findById(id).orElseThrow(()-> new NoSuchElementException("User with id " + id + " not found"));
-    }
-
-    public User update(long id, User updateUser){
-        User originalUser = this.findById(id);
+    public UserDto update(long id, UserDto user){
+        User updateUser = this.userMapper.toEntity(user);
+        User originalUser = this.userRepository.findById(id).orElseThrow(()-> new NoSuchElementException("User with id " + id + " not found"));
         originalUser.setName(updateUser.getName());
         originalUser.setEmail(updateUser.getEmail());
-        originalUser.setRoles(updateUser.getRoles());
         originalUser.setAddress(updateUser.getAddress());
+        originalUser.setRoles(updateUser.getRoles());
         originalUser.setEnabled(updateUser.isEnabled());
         originalUser.setGender(updateUser.getGender());
         originalUser.setGuardianName(updateUser.getGuardianName());
         originalUser.setGuardianContactNumber(updateUser.getGuardianContactNumber());
-
-        return this.userRepository.save(originalUser);
+        return this.userMapper.toDto(this.userRepository.save(originalUser));
     }
 
     @Transactional
@@ -66,13 +77,14 @@ public class UserService {
         User user = new User();
         user.setEmail(registration.getEmail());
         user.setName(registration.getName());
+        user.setAddress(registration.getAddress());
         user.setContactNumber(registration.getContactNumber());
         user.setGuardianName(registration.getGuardianName());
         user.setGuardianContactNumber(registration.getGuardianContactNumber());
-        Set<Long> courseIds = registration.getCourseClasses().stream().map(CourseClass::getId).collect(Collectors.toSet());
+        Set<Long> courseIds = registration.getCourses().stream().map(Course::getId).collect(Collectors.toSet());
 
-        Set<CourseClass> courseClasses = new HashSet<>(this.courseClassService.findByIds(courseIds));
-        user.setCourseClasses(courseClasses);
+        Set<Course> courses = new HashSet<>(this.courseService.findByIds(courseIds));
+        user.setCourses(courses);
         return user;
     }
 

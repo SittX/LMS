@@ -40,10 +40,10 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Column(nullable = false)
+    @Column
     private String guardianName;
 
-    @Column(nullable = false)
+    @Column
     private String guardianContactNumber;
 
     private boolean isAccountNonExpired = true;
@@ -51,7 +51,13 @@ public class User implements UserDetails {
     private boolean isCredentialsNonExpired = true;
     private boolean isEnabled = false;
 
-    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
+    @ManyToMany
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    @JsonIgnore
     private Set<Role> roles;
 
     @ManyToMany
@@ -60,25 +66,16 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "class_id")
     )
-    private Set<CourseClass> courseClasses;
+    private Set<Course> courses;
 
 //    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 //    @JsonIgnore
 //    private List<Attendance> attendances;
-//
-//    @ManyToMany
-//    @JoinTable(
-//            name = "user_classes",
-//            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-//            inverseJoinColumns = @JoinColumn(name = "class_id", referencedColumnName = "id")
-//    )
-//    @JsonIgnore
-//    private Set<Subject> subjects;
-//
+
 //    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 //    @JsonIgnore
 //    private List<LeaveRequest> leaveRequests;
-//
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();

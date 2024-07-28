@@ -2,9 +2,10 @@ package org.kst.lms.mappers;
 
 import lombok.RequiredArgsConstructor;
 import org.kst.lms.dtos.RegistrationRequest;
-import org.kst.lms.models.CourseClass;
+import org.kst.lms.models.Course;
 import org.kst.lms.models.Registration;
-import org.kst.lms.repositories.CourseClassRepository;
+import org.kst.lms.models.enums.Gender;
+import org.kst.lms.repositories.CourseRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -14,29 +15,26 @@ import java.util.Set;
 @Component
 @RequiredArgsConstructor
 public class RegistrationMapper {
-    private final CourseClassRepository courseClassRepository;
+    private final CourseRepository courseRepository;
 
     public Registration mapToRegistration(RegistrationRequest request){
-        if (request == null) {
-            return null;
-        }
-
         Registration registration = new Registration();
         registration.setName(request.getName());
         registration.setEmail(request.getEmail());
+        registration.setAddress(request.getAddress());
+        registration.setGender(Gender.findByValue(request.getGender()));
         registration.setContactNumber(request.getContactNumber());
         registration.setGuardianName(request.getGuardianName());
         registration.setGuardianContactNumber(request.getGuardianContactNumber());
         registration.setStatus(request.getStatus());
 
         // Convert course IDs to Course entities
-        Set<CourseClass> courseClasses = convertCourseIdsToCourses(request.getCourseIds());
-        registration.setCourseClasses(courseClasses);
-
+        Set<Course> courses = convertCourseIdsToCourses(request.getCourseIds());
+        registration.setCourses(courses);
         return registration;
     }
 
-    private Set<CourseClass> convertCourseIdsToCourses(List<Long> courseIds) {
-        return new HashSet<>(courseClassRepository.findAllById(courseIds));
+    private Set<Course> convertCourseIdsToCourses(List<Long> courseIds) {
+        return new HashSet<>(courseRepository.findAllById(courseIds));
     }
 }

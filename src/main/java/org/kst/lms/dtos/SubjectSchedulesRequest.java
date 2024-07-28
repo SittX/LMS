@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class SubjectWithScheduleRequest {
+public class SubjectSchedulesRequest {
     private long subjectId;
     private List<Integer> daysOfWeek;
 }

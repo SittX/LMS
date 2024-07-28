@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.sql.SQLException;
+import java.util.NoSuchElementException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({ResourceAlreadyProcessedException.class})
@@ -33,7 +36,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(response);
     }
 
-    @ExceptionHandler({UsernameNotFoundException.class, ResourceNotFoundException.class})
+    @ExceptionHandler({UsernameNotFoundException.class, ResourceNotFoundException.class, NoSuchElementException.class})
     public ResponseEntity<CustomResponseBody> resourceNotFoundExceptionsHandler(Exception ex, WebRequest request) {
         CustomResponseBody response = new CustomResponseBody();
         response.setStatus(HttpStatus.NOT_FOUND.name());
@@ -41,6 +44,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         return ResponseEntity
                 .notFound()
+                .build();
+    }
+
+    @ExceptionHandler({SQLException.class})
+    public ResponseEntity<CustomResponseBody> sqlExceptionsHandler(Exception ex, WebRequest request) {
+        CustomResponseBody response = new CustomResponseBody();
+        response.setStatus(HttpStatus.BAD_REQUEST.name());
+        response.setMessage(ex.getMessage());
+
+        return ResponseEntity
+                .badRequest()
                 .build();
     }
 }

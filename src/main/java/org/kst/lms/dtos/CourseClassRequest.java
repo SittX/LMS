@@ -17,5 +17,5 @@ public class CourseClassRequest {
     private LocalDate startDate;
     private LocalDate endDate;
     private Long teacherId;
-    private Set<SubjectWithScheduleRequest> subjectWithScheduleRequests;
+    private Set<SubjectSchedulesRequest> subjectSchedules;
 }

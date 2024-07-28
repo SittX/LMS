@@ -54,7 +54,7 @@ public class Registration {
             joinColumns = @JoinColumn(name = "registration_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id")
     )
-    private Set<CourseClass> courseClasses;
+    private Set<Course> courses;
 
     @CreationTimestamp
     private LocalDateTime registrationDateTime;

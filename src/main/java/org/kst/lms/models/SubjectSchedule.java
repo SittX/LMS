@@ -9,17 +9,18 @@ import java.util.Set;
 
 @Getter
 @Setter
-@Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SubjectWithSchedule {
+@Entity
+@Table(name = "subject_schedules")
+public class SubjectSchedule {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @ManyToOne
     @JoinColumn(name = "subject_id")
-    @JsonIgnore
     private Subject subject;
 
     @ElementCollection(fetch = FetchType.LAZY, targetClass = DaysOfWeek.class)
@@ -28,8 +29,9 @@ public class SubjectWithSchedule {
     @Enumerated(EnumType.STRING)
     private Set<DaysOfWeek> schedules;
 
+    // TODO : When saving SubjectSchedule, it should already have relation to the course id
     @ManyToOne
-    @JoinColumn(name = "course_class_id")
+    @JoinColumn(name = "course_id")
     @JsonIgnore
-    private CourseClass courseClass;
+    private Course course;
 }
